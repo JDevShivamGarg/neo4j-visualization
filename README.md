@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/73aaab8c-6ea7-4b8d-b971-7040654e1b39)# **Neo4j Graph Visualization**  
+**Neo4j Graph Visualization**  
 
 This is a **graph visualization tool** built with **React, Vite, and D3.js** to display and manage interconnected nodes and relationships dynamically. The project allows users to **add nodes, create links, and visualize data** in an interactive graph.  
 
