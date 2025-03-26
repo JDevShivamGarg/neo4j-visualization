@@ -3,7 +3,7 @@
 This is a **graph visualization tool** built with **React, Vite, and D3.js** to display and manage interconnected nodes and relationships dynamically. The project allows users to **add nodes, create links, and visualize data** in an interactive graph.  
 
 ## **🚀 Live Demo**  
-🔗 [GitHub Pages Deployment](https://your-username.github.io/your-repo-name/)  
+🔗 [GitHub Pages Deployment](https://jdevshivamgarg.github.io/neo4j-visualization/)  
 
 
 ---
@@ -12,7 +12,7 @@ This is a **graph visualization tool** built with **React, Vite, and D3.js** to 
 ✅ **Add Nodes** – Create new nodes with different types (User, Post, Comment).  
 ✅ **Create Links** – Connect nodes using relationships.  
 ✅ **Graph Visualization** – Interactive graph using **D3.js**.  
-✅ **Fully Responsive** – Optimized for mobile & desktop screens.  
+
 
 ---
 
