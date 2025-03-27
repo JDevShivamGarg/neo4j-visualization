@@ -163,7 +163,7 @@ const GraphCanvas = ({ graphData }) => {
       {/* Convert and Display Properties with Capitalized Keys */}
       {nodeConfig[selectedNode.label] && (
             <p className="capitalize py-3">
-              <strong>{nodeConfig[selectedNode.label].textKey}:</strong>{" "}
+              
               {selectedNode.properties[nodeConfig[selectedNode.label].textKey] || "N/A"}
             </p>
           )}
