@@ -1,6 +1,37 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-
+const nodeConfig = {
+  Employee_PainPoint: { color: "#A52A2A", textKey: "name" },
+  PreCustomerProduct: { color: "#00BFFF", textKey: "name" },
+  PreCustomerChallenge: { color: "#FF4500", textKey: "name" },
+  PreCustomerPainPoint: { color: "#8B0000", textKey: "name" },
+  PreCustomerImpact: { color: "#B22222", textKey: "name" },
+  VendorEvaluationTrigger: { color: "#9370DB", textKey: "name" },
+  DecisionCriteria: { color: "#2E8B57", textKey: "name" },
+  VendorRejectionReason: { color: "#FF0000", textKey: "name" },
+  PostCustomerProduct: { color: "#20B2AA", textKey: "name" },
+  ChallengesSolved: { color: "#008B8B", textKey: "name" },
+  UseCase: { color: "#DAA520", textKey: "name" },
+  MarketInsight: { color: "#CD5C5C", textKey: "insight" },
+  Research: { color: "#6A5ACD", textKey: "research_content" },
+  Company: { color: "#800080", textKey: "description" },
+  Product: { color: "#008080", textKey: "name" },
+  Client: { color: "#FF6347", textKey: "name" },
+  Department: { color: "#4682B4", textKey: "department_name" },
+  Employee: { color: "#228B22", textKey: "customer_name" },
+  Company_Objective: { color: "#B8860B", textKey: "objective" },
+  Company_Challenges: { color: "#8B0000", textKey: "challenges" },
+  Department_Responsibility: { color: "#32CD32", textKey: "name" },
+  Department_Objective: { color: "#DAA520", textKey: "objective" },
+  Department_Goal: { color: "#1E90FF", textKey: "goal" },
+  Department_Challenges: { color: "#FF69B4", textKey: "challenges" },
+  Department_PainPoint: { color: "#DC143C", textKey: "name" },
+  Employee_KPI: { color: "#4169E1", textKey: "name" },
+  Employee_Responsibility: { color: "#32CD32", textKey: "name" },
+  Employee_Objective: { color: "#8B4513", textKey: "objective" },
+  Employee_Goal: { color: "#FF4500", textKey: "goal" },
+  Employee_Challenges: { color: "#8B0000", textKey: "challenges" }
+};
 const GraphCanvas = ({ graphData }) => {
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
@@ -48,32 +79,6 @@ const GraphCanvas = ({ graphData }) => {
       .alpha(1) // Ensures proper force application
       .restart();
 
-
-    const nodeConfig = {
-      Employee_PainPoint: { color: "#A52A2A", textKey: "name" },
-      PreCustomerProduct: { color: "#00BFFF", textKey: "name" },
-      PreCustomerChallenge: { color: "#FF4500", textKey: "name" },
-      PreCustomerPainPoint: { color: "#8B0000", textKey: "name" },
-      PreCustomerImpact: { color: "#B22222", textKey: "name" },
-      VendorEvaluationTrigger: { color: "#9370DB", textKey: "name" },
-      DecisionCriteria: { color: "#2E8B57", textKey: "name" },
-      VendorRejectionReason: { color: "#FF0000", textKey: "name" },
-      PostCustomerProduct: { color: "#20B2AA", textKey: "name" },
-      ChallengesSolved: { color: "#008B8B", textKey: "name" },
-      UseCase: { color: "#DAA520", textKey: "name" },
-      MarketInsight: { color: "#CD5C5C", textKey: "insight" },
-      Research: { color: "#6A5ACD", textKey: "research_content" },
-      Company: { color: "#800080", textKey: "description" },
-      Product: { color: "#008080", textKey: "name" },
-      Client: { color: "#FF6347", textKey: "name" },
-      Department: { color: "#4682B4", textKey: "department_name" },
-      Employee: { color: "#228B22", textKey: "customer_name" },
-      Company_Objective: { color: "#B8860B", textKey: "objective" },
-      Company_Challenges: { color: "#8B0000", textKey: "challenges" },
-      Department_Responsibility: { color: "#32CD32", textKey: "name" },
-      Department_Objective: { color: "#DAA520", textKey: "objective" },
-      Department_Goal: { color: "#1E90FF", textKey: "goal" }
-    };
 
     const link = g.selectAll(".link")
       .data(graphData.links)
