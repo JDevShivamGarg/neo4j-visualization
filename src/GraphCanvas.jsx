@@ -16,44 +16,63 @@ const GraphCanvas = ({ graphData }) => {
     zoomRef.current = g;
 
     const zoom = d3.zoom()
-      .scaleExtent([0.1, 8])
-      .on("zoom", (event) => g.attr("transform", event.transform));
+      .scaleExtent([0.1, 8]) // Allow zooming between 0.1x and 8x
+      .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+
+        // Get current zoom scale
+        const scale = event.transform.k;
+
+        // Show text and links only when zoom level is greater than 3
+        d3.selectAll(".node-label")
+          .style("opacity", scale > 0.3 ? 1 : 0);
+
+        d3.selectAll(".link")
+          .style("stroke-width", scale > 0.3 ? 3 : 0);
+      });
     svg.call(zoom);
-    const initialScale = 0.1;
+    const initialScale = 0.15;
     const centerX = width / 2;
     const centerY = height / 2;
     svg.call(zoom.transform, d3.zoomIdentity.translate(centerX, centerY).scale(initialScale));
 
+    const nodeRadius = 80; 
+    const padding = 35;
+
     const simulation = d3.forceSimulation(graphData.nodes)
-      .force("link", d3.forceLink(graphData.links).id(d => d.id).distance(300))
-      .force("charge", d3.forceManyBody().strength(-500))
+      .force("link", d3.forceLink(graphData.links).id(d => d.id).distance(100))
+      .force("charge", d3.forceManyBody().strength(-50)) // Reduced repulsion
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius(80));
+      .force("radial", d3.forceRadial(250, width / 2, height / 2)) // Circular positioning
+      .force("collision", d3.forceCollide().radius(nodeRadius + padding)) // No overlaps
+      .alpha(1) // Ensures proper force application
+      .restart();
+
 
     const nodeConfig = {
-      Employee_PainPoint: { color: "#A52A2A", size: 40, textKey: "name" },
-      PreCustomerProduct: { color: "#00BFFF", size: 35, textKey: "name" },
-      PreCustomerChallenge: { color: "#FF4500", size: 35, textKey: "name" },
-      PreCustomerPainPoint: { color: "#8B0000", size: 35, textKey: "name" },
-      PreCustomerImpact: { color: "#B22222", size: 35, textKey: "name" },
-      VendorEvaluationTrigger: { color: "#9370DB", size: 35, textKey: "name" },
-      DecisionCriteria: { color: "#2E8B57", size: 35, textKey: "name" },
-      VendorRejectionReason: { color: "#FF0000", size: 35, textKey: "name" },
-      PostCustomerProduct: { color: "#20B2AA", size: 35, textKey: "name" },
-      ChallengesSolved: { color: "#008B8B", size: 35, textKey: "name" },
-      UseCase: { color: "#DAA520", size: 35, textKey: "name" },
-      MarketInsight: { color: "#CD5C5C", size: 35, textKey: "insight" },
-      Research: { color: "#6A5ACD", size: 35, textKey: "research_content" },
-      Company: { color: "#800080", size: 70, textKey: "description" },
-      Product: { color: "#008080", size: 65, textKey: "name" },
-      Client: { color: "#FF6347", size: 60, textKey: "name" },
-      Department: { color: "#4682B4", size: 55, textKey: "department_name" },
-      Employee: { color: "#228B22", size: 50, textKey: "customer_name" },
-      Company_Objective: { color: "#B8860B", size: 50, textKey: "objective" },
-      Company_Challenges: { color: "#8B0000", size: 50, textKey: "challenges" },
-      Department_Responsibility: { color: "#32CD32", size: 45, textKey: "name" },
-      Department_Objective: { color: "#DAA520", size: 45, textKey: "objective" },
-      Department_Goal: { color: "#1E90FF", size: 45, textKey: "goal" }
+      Employee_PainPoint: { color: "#A52A2A", textKey: "name" },
+      PreCustomerProduct: { color: "#00BFFF", textKey: "name" },
+      PreCustomerChallenge: { color: "#FF4500", textKey: "name" },
+      PreCustomerPainPoint: { color: "#8B0000", textKey: "name" },
+      PreCustomerImpact: { color: "#B22222", textKey: "name" },
+      VendorEvaluationTrigger: { color: "#9370DB", textKey: "name" },
+      DecisionCriteria: { color: "#2E8B57", textKey: "name" },
+      VendorRejectionReason: { color: "#FF0000", textKey: "name" },
+      PostCustomerProduct: { color: "#20B2AA", textKey: "name" },
+      ChallengesSolved: { color: "#008B8B", textKey: "name" },
+      UseCase: { color: "#DAA520", textKey: "name" },
+      MarketInsight: { color: "#CD5C5C", textKey: "insight" },
+      Research: { color: "#6A5ACD", textKey: "research_content" },
+      Company: { color: "#800080", textKey: "description" },
+      Product: { color: "#008080", textKey: "name" },
+      Client: { color: "#FF6347", textKey: "name" },
+      Department: { color: "#4682B4", textKey: "department_name" },
+      Employee: { color: "#228B22", textKey: "customer_name" },
+      Company_Objective: { color: "#B8860B", textKey: "objective" },
+      Company_Challenges: { color: "#8B0000", textKey: "challenges" },
+      Department_Responsibility: { color: "#32CD32", textKey: "name" },
+      Department_Objective: { color: "#DAA520", textKey: "objective" },
+      Department_Goal: { color: "#1E90FF", textKey: "goal" }
     };
 
     const link = g.selectAll(".link")
@@ -65,13 +84,14 @@ const GraphCanvas = ({ graphData }) => {
       .on("click", (event, d) => {
         setSelectedLink(d);
         setSelectedNode(null);
-      });
+      })
+      .style("stroke-width", 0);;
 
     const node = g.selectAll(".node")
       .data(graphData.nodes)
       .enter().append("circle")
       .attr("class", "node")
-      .attr("r", d => nodeConfig[d.label]?.size || 45)
+      .attr("r", d => 80)
       .attr("fill", d => nodeConfig[d.label]?.color || "#3B82F6")
       .style("stroke", "#fff")
       .style("stroke-width", 2)
@@ -103,14 +123,15 @@ const GraphCanvas = ({ graphData }) => {
       .attr("class", "node-label")
       .attr("text-anchor", "middle")
       .attr("alignment-baseline", "middle")
-      .attr("font-size", "16px")
+      .attr("font-size", "24px")
       .attr("fill", "#fff")
       .text(d => {
         let labelKey = nodeConfig[d.label]?.textKey || "name";
         let text = d.properties[labelKey] || d.label;
         let maxLength = Math.floor((nodeConfig[d.label]?.size || 45) / 4);
         return text.length > maxLength ? text.slice(0, maxLength - 3) + "..." : text;
-      });
+      })
+      .style("opacity", 0);;
 
     simulation.on("tick", () => {
       link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
@@ -122,45 +143,45 @@ const GraphCanvas = ({ graphData }) => {
   }, [graphData]);
 
   return (
-    <div className="relative">
-      <svg ref={svgRef} className="w-full h-full"></svg>
+<div className="relative h-screen flex"> {/* Full height container */}
+  <svg ref={svgRef} className="w-full h-full"></svg>
 
-      {selectedNode && (
-        <div className="absolute top-10 left-10 bg-white p-4 shadow-lg rounded-md text-black">
-          <h2 className="font-bold text-blue-600">{selectedNode.label}</h2>
+  {selectedNode && (
+    <div className="absolute right-0 bg-gray-900 px-4 shadow-lg rounded-md text-white w-64 h-screen">
+      <h2 className="font-bold text-blue-400">{selectedNode.label}</h2>
 
-          {/* Convert and Display Properties */}
-          {selectedNode.properties && Object.entries(selectedNode.properties).map(([key, value]) => (
-            <p key={key}>
-              <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
-            </p>
-          ))}
+      {/* Convert and Display Properties with Capitalized Keys */}
+      {selectedNode.properties && Object.entries(selectedNode.properties).map(([key, value]) => (
+        <p key={key} className="capitalize">
+          <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
+        </p>
+      ))}
 
-          <button onClick={() => setSelectedNode(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
-        </div>
-      )}
-
-
-
-      {selectedLink && (
-        <div className="absolute top-10 right-10 bg-white p-4 shadow-lg rounded-md text-black">
-          <h2 className="font-bold text-green-600">Relationship</h2>
-          <p><strong>Type:</strong> {selectedLink.type}</p>
-          <p><strong>Source:</strong> {selectedLink.source.label} (ID: {selectedLink.source.id})</p>
-          <p><strong>Target:</strong> {selectedLink.target.label} (ID: {selectedLink.target.id})</p>
-
-          {/* Convert and Display Relationship Properties */}
-          {selectedLink.properties && Object.entries(selectedLink.properties).map(([key, value]) => (
-            <p key={key}>
-              <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
-            </p>
-          ))}
-
-          <button onClick={() => setSelectedLink(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
-        </div>
-      )}
-
+      <button onClick={() => setSelectedNode(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
     </div>
+  )}
+
+  {selectedLink && (
+    <div className="absolute right-0 bg-gray-900 px-4 shadow-lg text-white w-64 h-screen">
+      <h2 className="font-bold text-green-400">Relationship</h2>
+      <p><strong>Type:</strong> {selectedLink.type}</p>
+      <p><strong>Source:</strong> {selectedLink.source.label} (ID: {selectedLink.source.id})</p>
+      <p><strong>Target:</strong> {selectedLink.target.label} (ID: {selectedLink.target.id})</p>
+
+      {/* Convert and Display Relationship Properties */}
+      {selectedLink.properties && Object.entries(selectedLink.properties).map(([key, value]) => (
+        <p key={key}>
+          <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
+        </p>
+      ))}
+
+      <button onClick={() => setSelectedLink(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
+    </div>
+  )}
+</div>
+
+
+
   );
 };
 
