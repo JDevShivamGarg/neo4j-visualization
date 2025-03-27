@@ -1,7 +1,5 @@
 import GraphContainer from "./GraphContainer";
 
-
-
 function App() {
 
   return (
