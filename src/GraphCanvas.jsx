@@ -143,16 +143,16 @@ const GraphCanvas = ({ graphData }) => {
   }, [graphData]);
 
   return (
-<div className="relative h-screen flex"> {/* Full height container */}
+<div className="relative h-screen flex px-4"> {/* Full height container */}
   <svg ref={svgRef} className="w-full h-full"></svg>
 
   {selectedNode && (
     <div className="absolute right-0 bg-gray-900 px-4 shadow-lg rounded-md text-white w-64 h-screen">
-      <h2 className="font-bold text-blue-400">{selectedNode.label}</h2>
+      <h2 className="font-bold text-blue-400 text-center">{selectedNode.label}</h2>
 
       {/* Convert and Display Properties with Capitalized Keys */}
       {selectedNode.properties && Object.entries(selectedNode.properties).map(([key, value]) => (
-        <p key={key} className="capitalize">
+        <p key={key} className="capitalize py-3">
           <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
         </p>
       ))}
@@ -163,7 +163,7 @@ const GraphCanvas = ({ graphData }) => {
 
   {selectedLink && (
     <div className="absolute right-0 bg-gray-900 px-4 shadow-lg text-white w-64 h-screen">
-      <h2 className="font-bold text-green-400">Relationship</h2>
+      <h2 className="font-bold text-green-400 text-center">Relationship</h2>
       <p><strong>Type:</strong> {selectedLink.type}</p>
       <p><strong>Source:</strong> {selectedLink.source.label} (ID: {selectedLink.source.id})</p>
       <p><strong>Target:</strong> {selectedLink.target.label} (ID: {selectedLink.target.id})</p>
