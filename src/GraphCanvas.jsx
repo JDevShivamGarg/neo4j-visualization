@@ -1,6 +1,40 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 
+const nodeConfig = {
+  Employee_PainPoint: { color: "#A52A2A", textKey: "name" },
+  PreCustomerProduct: { color: "#00BFFF", textKey: "name" },
+  PreCustomerChallenge: { color: "#FF4500", textKey: "name" },
+  PreCustomerPainPoint: { color: "#8B0000", textKey: "name" },
+  PreCustomerImpact: { color: "#B22222", textKey: "name" },
+  VendorEvaluationTrigger: { color: "#9370DB", textKey: "name" },
+  DecisionCriteria: { color: "#2E8B57", textKey: "name" },
+  VendorRejectionReason: { color: "#FF0000", textKey: "name" },
+  PostCustomerProduct: { color: "#20B2AA", textKey: "name" },
+  ChallengesSolved: { color: "#008B8B", textKey: "name" },
+  UseCase: { color: "#DAA520", textKey: "name" },
+  MarketInsight: { color: "#CD5C5C", textKey: "insight" },
+  Research: { color: "#6A5ACD", textKey: "research_content" },
+  Company: { color: "#800080", textKey: "description" },
+  Product: { color: "#008080", textKey: "name" },
+  Client: { color: "#FF6347", textKey: "name" },
+  Department: { color: "#4682B4", textKey: "department_name" },
+  Employee: { color: "#228B22", textKey: "customer_name" },
+  Company_Objective: { color: "#B8860B", textKey: "objective" },
+  Company_Challenges: { color: "#8B0000", textKey: "challenges" },
+  Department_Responsibility: { color: "#32CD32", textKey: "name" },
+  Department_Objective: { color: "#DAA520", textKey: "objective" },
+  Department_Goal: { color: "#1E90FF", textKey: "goal" },
+  Department_Challenges: { color: "#FF69B4", textKey: "challenges" },
+  Department_PainPoint: { color: "#DC143C", textKey: "name" },
+  Employee_KPI: { color: "#4169E1", textKey: "name" },
+  Employee_Responsibility: { color: "#32CD32", textKey: "name" },
+  Employee_Objective: { color: "#8B4513", textKey: "objective" },
+  Employee_Goal: { color: "#FF4500", textKey: "goal" },
+  Employee_Challenges: { color: "#8B0000", textKey: "challenges" }
+};
+
+
 const GraphCanvas = ({ graphData }) => {
   const svgRef = useRef(null);
   const zoomRef = useRef(null);
@@ -49,31 +83,7 @@ const GraphCanvas = ({ graphData }) => {
       .restart();
 
 
-    const nodeConfig = {
-      Employee_PainPoint: { color: "#A52A2A", textKey: "name" },
-      PreCustomerProduct: { color: "#00BFFF", textKey: "name" },
-      PreCustomerChallenge: { color: "#FF4500", textKey: "name" },
-      PreCustomerPainPoint: { color: "#8B0000", textKey: "name" },
-      PreCustomerImpact: { color: "#B22222", textKey: "name" },
-      VendorEvaluationTrigger: { color: "#9370DB", textKey: "name" },
-      DecisionCriteria: { color: "#2E8B57", textKey: "name" },
-      VendorRejectionReason: { color: "#FF0000", textKey: "name" },
-      PostCustomerProduct: { color: "#20B2AA", textKey: "name" },
-      ChallengesSolved: { color: "#008B8B", textKey: "name" },
-      UseCase: { color: "#DAA520", textKey: "name" },
-      MarketInsight: { color: "#CD5C5C", textKey: "insight" },
-      Research: { color: "#6A5ACD", textKey: "research_content" },
-      Company: { color: "#800080", textKey: "description" },
-      Product: { color: "#008080", textKey: "name" },
-      Client: { color: "#FF6347", textKey: "name" },
-      Department: { color: "#4682B4", textKey: "department_name" },
-      Employee: { color: "#228B22", textKey: "customer_name" },
-      Company_Objective: { color: "#B8860B", textKey: "objective" },
-      Company_Challenges: { color: "#8B0000", textKey: "challenges" },
-      Department_Responsibility: { color: "#32CD32", textKey: "name" },
-      Department_Objective: { color: "#DAA520", textKey: "objective" },
-      Department_Goal: { color: "#1E90FF", textKey: "goal" }
-    };
+    
 
     const link = g.selectAll(".link")
       .data(graphData.links)
@@ -143,30 +153,32 @@ const GraphCanvas = ({ graphData }) => {
   }, [graphData]);
 
   return (
-<div className="relative h-screen flex px-4"> {/* Full height container */}
+<div className="relative flex px-4">
   <svg ref={svgRef} className="w-full h-full"></svg>
 
   {selectedNode && (
-    <div className="absolute right-0 bg-gray-900 px-4 shadow-lg rounded-md text-white w-64 h-screen">
+    <div className=" absolute top-5 left-1/2 transform -translate-x-1/2 bg-gray-900/80 p-4 shadow-lg rounded-md text-white w-64">
       <h2 className="font-bold text-blue-400 text-center">{selectedNode.label}</h2>
 
       {/* Convert and Display Properties with Capitalized Keys */}
-      {selectedNode.properties && Object.entries(selectedNode.properties).map(([key, value]) => (
-        <p key={key} className="capitalize py-3">
-          <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
-        </p>
-      ))}
-
-      <button onClick={() => setSelectedNode(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
+      {nodeConfig[selectedNode.label] && (
+            <p className="capitalize py-3">
+              <strong>{nodeConfig[selectedNode.label].textKey}:</strong>{" "}
+              {selectedNode.properties[nodeConfig[selectedNode.label].textKey] || "N/A"}
+            </p>
+          )}
+      <div className="flex justify-center">
+      <button onClick={() => setSelectedNode(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded text-center">Close</button>
+    </div>
     </div>
   )}
 
   {selectedLink && (
-    <div className="absolute right-0 bg-gray-900 px-4 shadow-lg text-white w-64 h-screen">
+    <div className="absolute top-5 left-1/2 transform -translate-x-1/2 bg-gray-900/80 p-4  bg-gray-900 px-4 shadow-lg text-white w-64">
       <h2 className="font-bold text-green-400 text-center">Relationship</h2>
-      <p><strong>Type:</strong> {selectedLink.type}</p>
-      <p><strong>Source:</strong> {selectedLink.source.label} (ID: {selectedLink.source.id})</p>
-      <p><strong>Target:</strong> {selectedLink.target.label} (ID: {selectedLink.target.id})</p>
+      <p className="capitalize py-3"><strong>Type:</strong> {selectedLink.type}</p>
+      <p className="capitalize py-3"><strong>Source:</strong> {selectedLink.source.label} (ID: {selectedLink.source.id})</p>
+      <p className="capitalize py-3"><strong>Target:</strong> {selectedLink.target.label} (ID: {selectedLink.target.id})</p>
 
       {/* Convert and Display Relationship Properties */}
       {selectedLink.properties && Object.entries(selectedLink.properties).map(([key, value]) => (
@@ -174,8 +186,9 @@ const GraphCanvas = ({ graphData }) => {
           <strong>{key}:</strong> {typeof value === "object" && value.low !== undefined ? value.low : value}
         </p>
       ))}
-
-      <button onClick={() => setSelectedLink(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded">Close</button>
+      <div className="flex justify-center">
+      <button onClick={() => setSelectedLink(null)} className="mt-2 bg-red-500 text-white px-2 py-1 rounded text-center">Close</button>
+    </div>
     </div>
   )}
 </div>
