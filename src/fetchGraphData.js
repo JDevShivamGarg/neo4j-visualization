@@ -1,19 +1,16 @@
 import neo4j from "neo4j-driver";
 
-const URI = "neo4j+s://e3104a6e.databases.neo4j.io:7687"; 
-const USER = "neo4j";
-const PASSWORD = "zQae7lg-jYfBjZoQF_mcnIvL0AsmhFfvnopEgWnxytM"; 
+const URI = import.meta.env.VITE_URI;
+const USER = import.meta.env.VITE_USER;
+const PASSWORD = import.meta.env.VITE_PASSWORD;
+const QUERY = import.meta.env.VITE_QUERY
 
 export const fetchGraphData = async () => {
     const driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
     const session = driver.session();
   
     try {
-      const result = await session.run(
-        `MATCH (n) 
-        OPTIONAL MATCH (n)-[r]->(m) 
-        RETURN n, r, m`
-      );
+      const result = await session.run(QUERY);
   
       return processNeo4jData(result.records);
     } catch (error) {
