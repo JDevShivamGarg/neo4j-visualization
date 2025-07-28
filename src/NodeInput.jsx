@@ -2,11 +2,12 @@ import React, { useState } from "react";
 
 const NodeInput = ({ addNode }) => {
   const [nodeId, setNodeId] = useState("");
-  const [nodeType, setNodeType] = useState("question");
+  const [nodeType, setNodeType] = useState("");
 
   const handleAddNode = () => {
     addNode(nodeId, nodeType);
     setNodeId("");
+    setNodeType("");
   };
 
   return (
@@ -15,7 +16,7 @@ const NodeInput = ({ addNode }) => {
         type="text"
         value={nodeId}
         onChange={(e) => setNodeId(e.target.value)}
-        placeholder="Enter node ID"
+        placeholder="Enter node Label"
         className="p-2 border rounded bg-gray-800"
       />
       <select
@@ -23,6 +24,7 @@ const NodeInput = ({ addNode }) => {
         onChange={(e) => setNodeType(e.target.value)}
         className="p-2 border rounded bg-gray-800 text-white"
       >
+        <option value="" disabled hidden>Select node type</option>
         <option className="text-gray-400" value="user">User</option>
         <option className="text-gray-400" value="post">Post</option>
         <option className="text-gray-400" value="comment">Comment</option>
